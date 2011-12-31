@@ -29,6 +29,17 @@ module Cramp
       def on_data(*methods)
         self.on_data_callbacks += methods
       end
+
+      def on_new_data(method)
+        self.on_new_data_callbacks << method
+      end
+      def push_new_data(params = nil)
+        self.on_new_data_callbacks.each do |callback|
+          ObjectSpace.each_object(self) do |instance|
+            instance.send(callback, params)
+          end
+        end
+     end
     end
 
     def before_start(n = 0)
